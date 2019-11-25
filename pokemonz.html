@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .single-pokemon {
+      border: 4px solid black;
+      margin: 4px;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="pokemon-names">
+  </div>
+
+  <script>
+    let displayNames = () => {
+      
+      let nameSelector = document.querySelector(".pokemon-names");
+    
+      fetch("https://pokeapi.co/api/v2/pokemon/").then((response) => {
+        return response.json();
+      }).then((data) => {
+
+        data.results.forEach((item, index) => {
+          let createDiv = document.createElement("div")
+          nameSelector.appendChild(createDiv);
+          createDiv.classList.add(`pokemon${index}`)
+          createDiv.classList.add("single-pokemon")
+
+          let createName = document.createElement("p");
+          createName.textContent = item.name;
+          createDiv.appendChild(createName);
+
+          fetch(`https://pokeapi.co/api/v2/pokemon/${index + 1}/`).then((response) => {
+            return response.json();
+          }).then((data) => {
+            // console.log(typeof(data.height))
+            //display height
+            // let createAttributes = document.createElement("div");
+
+            let createHeight = document.createElement("p");
+            createHeight.textContent = `Height: ${data.height}`;
+            createDiv.appendChild(createHeight);
+
+            let createAbilities = document.createElement("p");
+            createAbilities.textContent = "Abilities:"
+            createDiv.appendChild(createAbilities);
+
+            //loop through abilities 
+            data.abilities.forEach((item) => {
+              let createAbility = document.createElement("span");
+              createAbility.textContent = item.ability.name+" ";
+              createDiv.appendChild(createAbility);
+            })
+
+            //moves
+            let createMoves = document.createElement("p");
+            createMoves.textContent = "Moves: ";
+            createDiv.appendChild(createMoves);
+            data.moves.forEach((move) => {
+              let createMove = document.createElement("span");
+              createMove.textContent = move.move.name + " "
+              createDiv.appendChild(createMove);
+            });
+
+            //image
+            let createImageTitle = document.createElement("p");
+            createImageTitle.textContent = "Image: ";
+            createDiv.appendChild(createImageTitle);
+            let createImage = document.createElement("img");
+            createImage.src = data.sprites.front_default;
+            createDiv.appendChild(createImage);
+          });
+        });
+
+      });
+
+    }
+
+    displayNames();
+
+  </script>
+
+</body>
+</html>
